@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pokedex">Pokédex</string>
+    <string name="greeting_full">¡Hola, bienvenido!</string>
+    <string name="greeting_bold_part">bienvenido!</string>
+    <string name="search">Buscar</string>
+</resources>

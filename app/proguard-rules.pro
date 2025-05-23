@@ -21,15 +21,13 @@
 #-renamesourcefileattribute SourceFile
 
 # --- Hilt (Dagger) ---
--keep class dagger.** { *; }
--keep class javax.inject.** { *; }
 -keep class dagger.hilt.** { *; }
+-keep class hilt_aggregated_deps.* { *; }
+-keep class javax.inject.Singleton { *; }
+-keep class javax.inject.Scope { *; }
 -keep class * extends dagger.hilt.android.internal.lifecycle.HiltViewModelFactory { *; }
 -keep class * extends androidx.lifecycle.ViewModel { *; }
 -keep class * extends androidx.lifecycle.ViewModelProvider$Factory { *; }
--dontwarn dagger.**
--dontwarn javax.inject.**
--dontwarn dagger.hilt.**
 
 # --- Retrofit ---
 -keep class retrofit2.** { *; }
@@ -37,10 +35,7 @@
 
 # --- Moshi ---
 -keep class com.squareup.moshi.** { *; }
--dontwarn com.squareup.moshi.**
--keepclassmembers class * {
-    @com.squareup.moshi.* <fields>;
-}
+-keep @com.squareup.moshi.JsonClass class * { *; }
 
 # --- Coil ---
 -keep class coil.** { *; }
@@ -56,3 +51,12 @@
 # --- LeakCanary (solo debug, pero por si acaso) ---
 -assumenosideeffects class com.squareup.leakcanary.** { *; }
 -dontwarn com.squareup.leakcanary.**
+
+# --- Modelos de datos ---
+-keep class com.davidgarcia.pokedex.model.** { *; }
+
+# --- Room ---
+-keep @androidx.room.Database class * { *; }
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep @androidx.room.Entity class * { *; }
+-keep interface * extends androidx.room.Dao { *; }

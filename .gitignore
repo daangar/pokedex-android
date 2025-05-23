@@ -39,3 +39,4 @@ keystore.release.properties
 *.dm
 
 release/
+.cursor/

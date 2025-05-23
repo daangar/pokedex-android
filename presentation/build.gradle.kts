@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
-    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kapt)
 }
 
 android {
@@ -16,6 +17,17 @@ android {
     buildFeatures {
         compose = true
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -36,6 +48,8 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.accompanist.systemuicontroller)
 }
 
 kapt {
