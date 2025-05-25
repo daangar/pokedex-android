@@ -60,29 +60,4 @@ fun NavHost() {
             }
         }
     }
-
-
-//    //TODO -> Change this to use compose navigation
-//    var selectedPokemon by remember { mutableStateOf<Pokemon?>(null) }
-//    SharedTransitionLayout {
-//        AnimatedContent(
-//            targetState = selectedPokemon != null,
-//            label = "basic_transition"
-//        ) { selected ->
-//            if (!selected) {
-//                PokemonListScreen(
-//                    sharedTransitionScope = this@SharedTransitionLayout,
-//                    animatedVisibilityScope = this,
-//                    onPokemonClick = { pokemon -> selectedPokemon = pokemon}
-//                )
-//            } else {
-//                PokemonDetailScreen(
-//                    sharedTransitionScope = this@SharedTransitionLayout,
-//                    animatedVisibilityScope = this,
-//                    pokemon = selectedPokemon,
-//                    onBack = { selectedPokemon = null }
-//                )
-//            }
-//        }
-//    }
 }
