@@ -163,17 +163,12 @@ private fun PokemonListScreenContent(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(list) { pokemon ->
-                            with(sharedTransitionScope) {
-                                PokemonCard(
-                                    modifier = Modifier
-                                        .sharedElement(
-                                            rememberSharedContentState(key = "image${pokemon.id}"),
-                                            animatedVisibilityScope = animatedVisibilityScope
-                                        ),
-                                    pokemon,
-                                    onPokemonClick
-                                )
-                            }
+                            PokemonCard(
+                                sharedTransitionScope =  sharedTransitionScope,
+                                animatedVisibilityScope =  animatedVisibilityScope,
+                                pokemon =  pokemon,
+                                onPokemonClick =  onPokemonClick
+                            )
                         }
                     }
                 }

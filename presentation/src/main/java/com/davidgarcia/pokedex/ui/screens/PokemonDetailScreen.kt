@@ -1,7 +1,9 @@
 package com.davidgarcia.pokedex.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,8 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -42,14 +42,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.davidgarcia.pokedex.model.Pokemon
 import com.davidgarcia.pokedex.mvi.PokemonDetailIntent
 import com.davidgarcia.pokedex.mvi.PokemonDetailState
 import com.davidgarcia.pokedex.presentation.R
 import com.davidgarcia.pokedex.ui.components.StatIndicator
 import com.davidgarcia.pokedex.ui.theme.PokedexColor
+import com.davidgarcia.pokedex.ui.theme.PokedexTheme
 import com.davidgarcia.pokedex.ui.utils.toColor
 import com.davidgarcia.pokedex.viewmodel.PokemonDetailViewModel
 
@@ -101,21 +104,35 @@ private fun PokemonDetailScreenContent(
                     )
                 },
                 title = {
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = name,
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            color = PokedexColor.NavyBlue
+                    with(sharedTransitionScope) {
+                        Text(
+                            modifier = Modifier
+                                .sharedElement(
+                                    rememberSharedContentState(key = "name${id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                                .padding(start = 8.dp),
+                            text = name,
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                color = PokedexColor.NavyBlue
+                            )
                         )
-                    )
+                    }
                 },
                 actions = {
-                    Text(
-                        text = "#${id.toString().padStart(3, '0')}",
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            color = PokedexColor.SmokeGray
+                    with(sharedTransitionScope) {
+                        Text(
+                            modifier = Modifier
+                                .sharedElement(
+                                    rememberSharedContentState(key = "id${id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                ),
+                            text = "#${id.toString().padStart(3, '0')}",
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                color = PokedexColor.SmokeGray
+                            )
                         )
-                    )
+                    }
                 }
             )
         }
@@ -126,14 +143,17 @@ private fun PokemonDetailScreenContent(
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
         ) {
-            var color by remember { mutableStateOf("white") }
-            Box(modifier = Modifier.wrapContentHeight()) {
+            var color by remember { mutableStateOf("") }
+            Box(modifier = Modifier.height(230.dp)) {
 
-                Box(modifier = Modifier
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(color.toColor(), RoundedCornerShape(15.dp))
-                    .fillMaxWidth()
-                    .height(157.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(color.toColor(), RoundedCornerShape(15.dp))
+                        .fillMaxWidth()
+                        .height(115.dp)
+                        .align(Alignment.BottomCenter)
+                )
 
                 with(sharedTransitionScope) {
                     AsyncImage(
@@ -144,9 +164,8 @@ private fun PokemonDetailScreenContent(
                                 rememberSharedContentState(key = "image${id}"),
                                 animatedVisibilityScope = animatedVisibilityScope
                             )
-                            .align(Alignment.TopCenter)
-                            .size(width = 265.dp, height = 230.86.dp),
-                        contentScale = ContentScale.Inside
+                            .align(Alignment.TopCenter),
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -218,6 +237,38 @@ private fun PokemonDetailScreenContent(
                 }
             }
 
+        }
+    }
+}
+
+@Suppress("unused")
+class PokemonDetailScreenPreviews {
+
+    @OptIn(ExperimentalSharedTransitionApi::class)
+    @Preview(showBackground = true)
+    @Composable
+    fun PokemonDetailScreenPreview() {
+        PokedexTheme {
+            SharedTransitionLayout {
+                val sharedScope = this
+                AnimatedVisibility(true) {
+                    val visibilityScope = this
+                    PokemonDetailScreenContent(
+                        state = PokemonDetailState.Success(
+                            Pokemon(
+                                id = 1,
+                                name = "Pikachu",
+                                color = "blue"
+                            )
+                        ),
+                        1,
+                        "Pikachu",
+                        null,
+                        sharedScope,
+                        visibilityScope
+                    ) {}
+                }
+            }
         }
     }
 }
