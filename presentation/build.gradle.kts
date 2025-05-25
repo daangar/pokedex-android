@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.animation.animation)
     implementation(libs.coil.compose)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
@@ -50,6 +51,7 @@ dependencies {
     implementation(libs.coroutines.android)
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.navigation.animation)
 }
 
 kapt {

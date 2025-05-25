@@ -13,4 +13,9 @@ interface PokemonRepository {
      * Returns a flow that emits matching Pokemon when searching by id or name.
      * */
     fun searchPokemon(query: String): Flow<List<Pokemon>>
+
+    /**
+     * Returns a flow that emits Pokemon full detail by id
+     * */
+    fun getPokemonFullDetail(id: Int): Flow<Pokemon>
 }

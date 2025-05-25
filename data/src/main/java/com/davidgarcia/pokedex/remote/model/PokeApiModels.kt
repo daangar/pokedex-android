@@ -23,13 +23,42 @@ data class NameEntry(
 )
 
 @JsonClass(generateAdapter = true)
+data class PokemonTypeEntry(
+    val slot: Int,
+    val type: NamedAPIResource
+)
+
+@JsonClass(generateAdapter = true)
+data class PokemonStatsEntry(
+    @Json(name = "base_stat")
+    val baseStat: Int,
+    val stat: NamedAPIResource
+)
+
+@JsonClass(generateAdapter = true)
+data class FlavorText(
+    @Json(name = "flavor_text")
+    val flavorText: String,
+    val language: NamedAPIResource
+)
+
+@JsonClass(generateAdapter = true)
 data class PokemonSpeciesResponse(
     val id: Int,
-    val names: List<NameEntry>
+    val names: List<NameEntry>,
+    val color: NamedAPIResource,
+    @Json(name = "flavor_text_entries")
+    val flavorTextEntries: List<FlavorText>
 )
 
 @JsonClass(generateAdapter = true)
 data class PokemonDetailResponse(
+    val id: Int,
+    val name: String,
+    val types: List<PokemonTypeEntry>,
+    val stats: List<PokemonStatsEntry>,
+    val weight: Int,
+    val height: Int,
     val sprites: Sprites
 )
 

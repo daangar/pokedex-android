@@ -1,9 +1,12 @@
 package com.davidgarcia.pokedex.ui.utils
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.graphics.toColorInt
+import com.davidgarcia.pokedex.ui.theme.PokedexColor
 
 fun String.toBoldAnnotatedString(boldPart: String): AnnotatedString = buildAnnotatedString {
     append(this@toBoldAnnotatedString)
@@ -16,3 +19,10 @@ fun String.toBoldAnnotatedString(boldPart: String): AnnotatedString = buildAnnot
         )
     }
 }
+
+fun String.toColor(): Color =
+    try {
+        Color(this.toColorInt())
+    } catch (e: Exception) {
+        PokedexColor.RoyalBlue
+    }
