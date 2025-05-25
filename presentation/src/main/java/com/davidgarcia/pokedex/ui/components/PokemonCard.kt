@@ -1,5 +1,7 @@
 package com.davidgarcia.pokedex.ui.components
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,10 +26,18 @@ import com.davidgarcia.pokedex.model.Pokemon
 import com.davidgarcia.pokedex.ui.theme.PokedexColor
 import com.davidgarcia.pokedex.ui.theme.PokedexTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun PokemonCard(pokemon: Pokemon) {
+fun PokemonCard(
+    modifier: Modifier = Modifier,
+    pokemon: Pokemon,
+    onPokemonClick: (Pokemon) -> Unit
+) {
     Card(
-        modifier = Modifier.size(165.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .size(165.dp)
+            .clickable { onPokemonClick(pokemon) },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
@@ -68,11 +79,14 @@ fun PokemonCard(pokemon: Pokemon) {
 @Suppress("unused")
 class PokemonCardPreviews {
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Preview
     @Composable
     fun PokemonCardPreview() {
         PokedexTheme {
-            PokemonCard(Pokemon(1, "pikachu", null))
+            PokemonCard(
+                pokemon = Pokemon(1, "pikachu", null)
+            ) {}
         }
     }
 }

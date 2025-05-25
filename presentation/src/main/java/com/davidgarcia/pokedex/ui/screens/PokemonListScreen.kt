@@ -1,5 +1,10 @@
 package com.davidgarcia.pokedex.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,20 +54,32 @@ import com.davidgarcia.pokedex.ui.theme.PokedexColor
 import com.davidgarcia.pokedex.ui.theme.PokedexTheme
 import com.davidgarcia.pokedex.viewmodel.PokemonViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PokemonListScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onPokemonClick: (Pokemon) -> Unit,
     viewModel: PokemonViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    PokemonListScreenContent(state) {
+    PokemonListScreenContent(
+        state,
+        sharedTransitionScope,
+        animatedVisibilityScope,
+        onPokemonClick
+    ) {
         viewModel.sendIntent(it)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 private fun PokemonListScreenContent(
     state: PokemonState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onPokemonClick: (Pokemon) -> Unit,
     sendIntent: (PokemonIntent) -> Unit
 ) {
     val query = remember { mutableStateOf("") }
@@ -79,7 +96,9 @@ private fun PokemonListScreenContent(
         ) {
 
             BoldAnnotatedText(
-                modifier = Modifier.padding(top = 20.dp).requiredHeight(34.dp),
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .requiredHeight(34.dp),
                 textRes = R.string.greeting_full,
                 boldRes = R.string.greeting_bold_part,
                 style = MaterialTheme.typography.titleMedium.copy(color = PokedexColor.AbyssBlue)
@@ -144,14 +163,22 @@ private fun PokemonListScreenContent(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(list) { pokemon ->
-                            Column(modifier = Modifier.padding(8.dp)) {
-                                PokemonCard(pokemon)
+                            with(sharedTransitionScope) {
+                                PokemonCard(
+                                    modifier = Modifier
+                                        .sharedElement(
+                                            rememberSharedContentState(key = "image${pokemon.id}"),
+                                            animatedVisibilityScope = animatedVisibilityScope
+                                        ),
+                                    pokemon,
+                                    onPokemonClick
+                                )
                             }
                         }
                     }
                 }
                 is PokemonState.Error -> {
-                    Text("Error: ${state.throwable.message}")
+                    Text(stringResource(R.string.load_error), color = PokedexColor.NavyBlue)
                 }
             }
         }
@@ -164,15 +191,22 @@ private fun PokemonListScreenContent(
 @Suppress("unused")
 class PokemonListScreenPreviews {
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Preview(showBackground = true)
     @Composable
     fun PokemonListScreenPreview() {
         PokedexTheme {
-            PokemonListScreenContent(
-                state = PokemonState.Success(
-                    listOf(Pokemon(1, "Pikachu", null))
-                )
-            ) {}
+            SharedTransitionLayout {
+                val sharedScope = this
+                AnimatedVisibility(true) {
+                    val visibilityScope = this
+                    PokemonListScreenContent(
+                        state = PokemonState.Success(
+                            listOf(Pokemon(1, "Pikachu", null))
+                        ),sharedScope, visibilityScope, {}, {}
+                    )
+                }
+            }
         }
     }
 }

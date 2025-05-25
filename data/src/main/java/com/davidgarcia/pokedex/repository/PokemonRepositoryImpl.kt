@@ -75,6 +75,34 @@ class PokemonRepositoryImpl @Inject constructor(
             .map { list -> list.map { e -> Pokemon(e.id, e.name, e.imageUrl) } }
             .flowOn(dispatchers.io)
 
+    override fun getPokemonFullDetail(id: Int): Flow<Pokemon> = flow {
+        // Fetch detail and species in parallel
+        val detailDeferred = coroutineScope { async { api.getPokemonDetail(id) } }
+        val speciesDeferred = coroutineScope { async { api.getPokemonSpecies(id) } }
+        val detail = detailDeferred.await()
+        val species = speciesDeferred.await()
+        val types = detail.types.map { it.type.name }
+        val stats = detail.stats.associate { it.stat.name to it.baseStat }
+        val name = dao.getAll().first().find { it.id == id }?.name.orEmpty()
+        val description = species.flavorTextEntries.firstOrNull {
+            it.language.name == SPANISH_CODE
+        }?.flavorText.orEmpty()
+        val color = species.color.name
+        emit(
+            Pokemon(
+                id = id,
+                name = name,
+                imageUrl = detail.sprites.other.home.frontDefault,
+                types = types,
+                weight = detail.weight,
+                height = detail.height,
+                description = description,
+                color = color,
+                stats = stats
+            )
+        )
+    }.flowOn(dispatchers.io)
+
     companion object {
         const val FIRST_GENERATION_ID = 1
         const val FLOWS = 5
