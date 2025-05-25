@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pokedex">Pokédex</string>
+    <string name="greeting_full">¡Hola, bienvenido!</string>
+    <string name="greeting_bold_part">bienvenido!</string>
+    <string name="search">Buscar</string>
+    <string name="stats">Estadísticas</string>
+    <string name="hp">HP</string>
+    <string name="atack">Ataque</string>
+    <string name="defense">Defensa</string>
+    <string name="special_attack">Ataque Especial</string>
+    <string name="special_defense">Defensa Especial</string>
+    <string name="speed">Velocidad</string>
+    <string name="other">Otro</string>
+    <string name="load_error">Ocurrió un error al intentar obtener el listado. Intenta nuevamente más tarde</string>
+    <string name="load_detail_error">Ocurrió un error al intentar obtener el detalle. Por favor intenta más tarde</string>
+</resources>
